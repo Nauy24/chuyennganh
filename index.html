@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kanji Quizlet Mobile</title>
+
+<style>
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  margin:0;
+  font-family:"Noto Sans",system-ui,sans-serif;
+  background:#eaf4f4;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:1.5vh 0;
+}
+
+/* ===== DROPDOWN ===== */
+.dropdown-wrapper{
+  width:94vw;
+  display:flex;
+  gap:2.5vw;
+  margin-bottom:1.2vh;
+}
+
+select{
+  flex:1;
+  height:6.5vh;
+  min-height:52px;
+  padding:0 10px;
+  font-size:4.3vw;
+  border-radius:16px;
+  border:none;
+  background:#ffffff;
+  box-shadow:0 6px 14px rgba(0,0,0,0.08);
+  text-align:center;
+  text-align-last:center;
+  font-weight:700;
+  color:#234;
+}
+
+/* ===== CARD ===== */
+.card{
+  width:94vw;
+  height:73vh;
+  background:#fdfefe;
+  border-radius:24px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+  padding:2vh 4vw;
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ===== BACK ===== */
+.back{
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
+
+/* ===== CHECKBOX AREA ===== */
+.hide-options{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:1.6vw;
+  margin-bottom:1vh;
+  padding:1vh 1vw;
+  background:#f2fbfb;
+  border:1px solid #d7eeee;
+  border-radius:14px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.03);
+}
+
+.hide-options label{
+  flex:1;
+  height:5vh;
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:1.2vw;
+  background:white;
+  border-radius:10px;
+  font-size:3.2vw;
+  font-weight:700;
+  color:#355f5b;
+  box-shadow:0 1px 3px rgba(0,0,0,0.03);
+  cursor:pointer;
+}
+
+.hide-options input{
+  width:18px;
+  height:18px;
+  margin:0;
+  accent-color:#2f5d62;
+}
+
+/* ===== TEXT ===== */
+.reading{
+  font-family:"Gothic","Meiryo","Helvetica Neue",sans-serif;
+  font-size:9vw;
+  margin-top:2vh;
+  margin-bottom:1.5vh;
+  color:#6f8f90;
+  font-weight:700;
+  text-align:center;
+  width:100%;
+  white-space:nowrap;
+  overflow:hidden;
+}
+
+.meaning{
+  font-family:"Quicksand","Nunito",system-ui,sans-serif;
+  font-size:10vw;
+  font-weight:bold;
+  margin-bottom:2vh;
+  text-align:center;
+  color:#e85d75;
+  width:100%;
+  line-height:1.2;
+  white-space:nowrap;
+  overflow:hidden;
+}
+
+.divider{
+  border-top:3px solid #9dc5c3;
+  margin:2vh 0;
+  width:100%;
+}
+
+.backKanji{
+  font-family:"Gothic","Meiryo","Helvetica Neue",sans-serif;
+  font-size:11vw;
+  font-weight:bold;
+  margin-top:1vh;
+  color:#6f8f90;
+  text-align:center;
+  width:100%;
+  white-space:pre;
+  line-height:1.4;
+  overflow:hidden;
+}
+
+/* ===== HIDDEN ===== */
+.reveal-box{
+  cursor:pointer;
+  user-select:none;
+}
+
+.hidden-text{
+  background:#dceeee !important;
+  color:transparent !important;
+  border-radius:14px;
+  min-height:1.4em;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* ===== INFO BAR ===== */
+.info-bar{
+  width:94vw;
+  margin-top:1vh;
+  padding:1.2vh 3vw;
+  background:#f7fbfb;
+  border-radius:18px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.05);
+}
+
+.info-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:2vw;
+  margin-bottom:8px;
+}
+
+.progress-wrapper{
+  width:100%;
+  height:8px;
+  background:#e3f0ef;
+  border-radius:999px;
+  overflow:hidden;
+}
+
+.progress-fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#4facfe,#00f2fe);
+  transition:width 0.3s ease;
+}
+
+#counter{
+  padding:7px 16px;
+  background:linear-gradient(135deg,#2f5d62,#3f7d84);
+  color:#fff;
+  border-radius:999px;
+  font-weight:bold;
+  font-size:3.9vw;
+  white-space:nowrap;
+}
+
+#lessonInfo{
+  padding:7px 14px;
+  background:#e3f0ff;
+  color:#1f5fbf;
+  border-radius:999px;
+  font-size:3.4vw;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.switch{
+  position:relative;
+  width:54px;
+  height:30px;
+}
+
+.switch input{
+  opacity:0;
+  width:0;
+  height:0;
+}
+
+.slider{
+  position:absolute;
+  cursor:pointer;
+  inset:0;
+  background:#ccc;
+  border-radius:999px;
+  transition:0.3s;
+}
+
+.slider:before{
+  content:"";
+  position:absolute;
+  height:22px;
+  width:22px;
+  left:4px;
+  top:4px;
+  background:white;
+  border-radius:50%;
+  transition:0.3s;
+}
+
+.switch input:checked + .slider{
+  background:#2f5d62;
+}
+
+.switch input:checked + .slider:before{
+  transform:translateX(24px);
+}
+
+/* ===== CONTROLS ===== */
+.controls{
+  width:94vw;
+  display:flex;
+  gap:2vw;
+  margin-top:1vh;
+}
+
+.controls button{
+  flex:1;
+  height:7vh;
+  min-height:56px;
+  border:none;
+  border-radius:16px;
+  font-size:8vw;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  background:#9dc5c3;
+  color:black;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+
+.controls .btn-audio{
+  flex:1.2;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="dropdown-wrapper">
+  <select id="levelSelect"></select>
+  <select id="lessonSelect"></select>
+</div>
+
+<div class="card">
+
+  <div class="back">
+
+    <div class="hide-options">
+
+      <label>
+        <input type="checkbox" id="hideReading" onchange="render()">
+        Hira
+      </label>
+
+      <label>
+        <input type="checkbox" id="hideKanji" onchange="render()">
+        Kanji
+      </label>
+
+      <label>
+        <input type="checkbox" id="hideMeaning" onchange="render()">
+        VN
+      </label>
+
+    </div>
+
+    <div class="reading reveal-box"
+         id="reading"
+         onclick="reveal(this)">
+    </div>
+
+    <div class="meaning reveal-box"
+         id="meaning"
+         onclick="reveal(this)">
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="backKanji reveal-box"
+         id="backKanji"
+         onclick="reveal(this)">
+    </div>
+
+  </div>
+
+</div>
+
+<div class="info-bar">
+
+  <div class="info-top">
+
+    <div style="display:flex;align-items:center;gap:8px;">
+
+      <span style="
+      font-size:3.8vw;
+      font-weight:700;
+      color:#355f5b;
+      white-space:nowrap;
+      ">
+      Học liên bài
+      </span>
+
+      <label class="switch">
+
+        <input type="checkbox"
+               id="multiLesson"
+               onchange="loadCards()">
+
+        <span class="slider"></span>
+
+      </label>
+
+    </div>
+
+    <span id="counter"></span>
+
+    <span id="lessonInfo"></span>
+
+  </div>
+
+  <div class="progress-wrapper">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+
+  <div id="progressText"
+       style="
+       font-size:3vw;
+       margin-top:4px;
+       color:#666;
+       text-align:center;">
+  </div>
+
+</div>
+
+<div class="controls">
+
+  <button onclick="prevCard(event)">◀</button>
+
+  <button onclick="showAll()"
+  style="
+  font-size:10vw;
+  padding:0;
+  line-height:1;
+  ">
+  👁
+  </button>
+
+  <button onclick="nextCard(event)">▶</button>
+
+  <button onclick="shuffleCards(event)">🔀</button>
+
+  <button class="btn-audio" onclick="speak(event)">🔊</button>
+
+</div>
+
+<script src="data.js"></script>
+
+<script>
+
+const levelShort={
+  "Chuyên ngành":"CN",
+  };
+
+let data=[],index=0;
+let currentLevel="",currentLesson="";
+let isShuffled=false;
+let originalData=[];
+
+const levelSelect=document.getElementById("levelSelect");
+const lessonSelect=document.getElementById("lessonSelect");
+
+function init(){
+
+  Object.keys(lessons).forEach(level=>{
+
+    const opt=document.createElement("option");
+
+    opt.value=level;
+    opt.textContent=level;
+
+    levelSelect.appendChild(opt);
+  });
+
+  levelSelect.onchange=loadLessons;
+
+  lessonSelect.onchange=loadCards;
+
+  levelSelect.value=Object.keys(lessons)[0];
+
+  loadLessons();
+}
+
+function loadLessons(){
+
+  currentLevel=levelSelect.value;
+
+  lessonSelect.innerHTML="";
+
+  Object.keys(lessons[currentLevel]).forEach(lesson=>{
+
+    const opt=document.createElement("option");
+
+    opt.value=lesson;
+    opt.textContent=lesson;
+
+    lessonSelect.appendChild(opt);
+  });
+
+  lessonSelect.value=Object.keys(lessons[currentLevel])[0];
+
+  loadCards();
+}
+
+function loadCards(){
+
+  currentLesson=lessonSelect.value;
+
+  const isMulti=document.getElementById("multiLesson").checked;
+
+  if(isMulti){
+
+    data=[];
+
+    Object.keys(lessons).forEach(level=>{
+
+      Object.keys(lessons[level]).forEach(lesson=>{
+
+        lessons[level][lesson].forEach(item=>{
+
+          data.push({
+            ...item,
+            level,
+            lesson
+          });
+
+        });
+
+      });
+
+    });
+
+  }else{
+
+    data=[...lessons[currentLevel][currentLesson]].map(item=>({
+
+      ...item,
+
+      level:currentLevel,
+
+      lesson:currentLesson
+
+    }));
+  }
+
+  originalData=[...data];
+
+  index=0;
+
+  render();
+}
+
+function autoFit(el,max=10,min=3){
+
+  let size=max;
+
+  el.style.fontSize=size+"vw";
+
+  while(el.scrollWidth > el.clientWidth && size > min){
+
+    size -= 0.3;
+
+    el.style.fontSize=size+"vw";
+  }
+}
+
+function render(){
+
+  if(!data.length) return;
+
+  const item=data[index];
+
+  const readingEl=document.getElementById("reading");
+  const meaningEl=document.getElementById("meaning");
+  const kanjiEl=document.getElementById("backKanji");
+
+  readingEl.textContent=item.reading;
+  meaningEl.textContent=item.meaning;
+  kanjiEl.textContent="Kanji: " + item.kanji;
+
+  autoFit(readingEl,9,3);
+  autoFit(meaningEl,10,3);
+  autoFit(kanjiEl,11,3);
+
+  readingEl.classList.remove("hidden-text");
+  meaningEl.classList.remove("hidden-text");
+  kanjiEl.classList.remove("hidden-text");
+
+  readingEl.dataset.hidden="false";
+  meaningEl.dataset.hidden="false";
+  kanjiEl.dataset.hidden="false";
+
+  if(document.getElementById("hideReading").checked){
+
+    readingEl.classList.add("hidden-text");
+    readingEl.dataset.hidden="true";
+  }
+
+  if(document.getElementById("hideMeaning").checked){
+
+    meaningEl.classList.add("hidden-text");
+    meaningEl.dataset.hidden="true";
+  }
+
+  if(document.getElementById("hideKanji").checked){
+
+    kanjiEl.classList.add("hidden-text");
+    kanjiEl.dataset.hidden="true";
+  }
+
+  counter.innerText=(index+1)+" / "+data.length;
+
+  lessonInfo.innerText=
+    levelShort[item.level]+" - "+item.lesson;
+
+  const percent=Math.round(((index+1)/data.length)*100);
+
+  document.getElementById("progressFill").style.width=
+    percent+"%";
+
+  document.getElementById("progressText").innerText=
+    percent+"%";
+}
+
+function reveal(el){
+
+  if(el.dataset.hidden==="true"){
+
+    el.classList.remove("hidden-text");
+
+    el.dataset.hidden="false";
+  }
+}
+
+function showAll(){
+
+  document.getElementById("reading")
+    .classList.remove("hidden-text");
+
+  document.getElementById("meaning")
+    .classList.remove("hidden-text");
+
+  document.getElementById("backKanji")
+    .classList.remove("hidden-text");
+
+  document.getElementById("reading")
+    .dataset.hidden="false";
+
+  document.getElementById("meaning")
+    .dataset.hidden="false";
+
+  document.getElementById("backKanji")
+    .dataset.hidden="false";
+}
+
+function nextCard(e){
+
+  e.stopPropagation();
+
+  if(index < data.length-1){
+
+    index++;
+
+  }else{
+
+    index=0;
+  }
+
+  render();
+}
+
+function prevCard(e){
+
+  e.stopPropagation();
+
+  if(index > 0){
+
+    index--;
+
+  }else{
+
+    index=data.length-1;
+  }
+
+  render();
+}
+
+function shuffleCards(e){
+
+  e.stopPropagation();
+
+  if(!isShuffled){
+
+    data.sort(()=>Math.random()-0.5);
+
+    isShuffled=true;
+
+  }else{
+
+    data=[...originalData];
+
+    isShuffled=false;
+  }
+
+  index=0;
+
+  render();
+}
+
+function speak(e){
+
+  e.stopPropagation();
+
+  const u=new SpeechSynthesisUtterance(data[index].reading);
+
+  u.lang="ja-JP";
+
+  u.rate=0.9;
+
+  speechSynthesis.cancel();
+
+  speechSynthesis.speak(u);
+}
+
+init();
+
+</script>
+
+</body>
+</html>
